@@ -65,7 +65,7 @@
       <p style="margin-top: 1.5rem;">{{ page.hero_sub }}</p>
     </div>
     {% if page.hero_img %}
-      <img src="{{ page.hero_img }}" alt="Dave Shaw Archery Performance Coaching" />
+      <img src="{{ page.hero_img }}" alt="Dave Shaw Performance Archery Coaching" />
     {% endif %}
   </section>
 
@@ -89,7 +89,7 @@
 
   <!-- SERVICES / OFFERINGS -->
   <section>
-    <span class="eyebrow" style="text-align: center; margin-bottom: 3rem;">Coaching Specialisms</span>
+    <span class="eyebrow" style="text-align: center; margin-bottom: 3rem;">Coaching Services</span>
     <div class="services-grid">
       {% for service in page.services %}
         <div class="service-card">
@@ -100,7 +100,7 @@
     </div>
   </section>
 
-  <!-- CONTACT -->
+<!-- CONTACT -->
   <section class="grid-2" id="contact">
     <div class="text-block">
       <span class="eyebrow">Contact</span>
@@ -110,13 +110,11 @@
         <img src="{{ page.contact_img }}" alt="Dave Shaw Coaching Location" style="height: 200px; margin-top: 1rem;" />
       {% endif %}
     </div>
-    <div>
-      <form action="#" method="POST">
-        <input type="text" name="name" placeholder="Your Name" required />
-        <input type="email" name="email" placeholder="Your Email" required />
-        <textarea name="message" rows="5" placeholder="Tell me about your current archery journey..." required></textarea>
-        <button type="submit">Send Message</button>
-      </form>
+    <div style="display: flex; flex-direction: column; justify-content: center;">
+      <p style="font-size: 1rem; color: var(--muted); margin-bottom: 0.5rem;">Get in touch directly via email:</p>
+      <a href="mailto:{{ page.contact_email }}" style="font-family: var(--display); font-size: clamp(1.5rem, 3vw, 2.2rem); color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--gold); padding-bottom: 4px; word-break: break-all;">
+        {{ page.contact_email }}
+      </a>
     </div>
   </section>
 

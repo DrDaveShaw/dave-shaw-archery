@@ -22,13 +22,16 @@ credentials:
 
 # Core Offerings Grid
 services:
-  - title: "Olympic Recurve"
-    desc: "Technical framework refinement and draw-cycle efficiency built around your unique biomechanics."
-  - title: "Compound Development"
-    desc: "Structured pathways focusing on consistency, equipment optimization, and high-pressure mindset."
+  - title: "Technical development"
+    desc: "Technical refinement and draw-cycle efficiency built around the archer's unique biomechanics. Options for focussing on the AGB Recurve Technical Framework and variation for Pathway selection."
+  - title: "Intelligent Archers"
+    desc: "Structured sessions focusing on consistency, equipment optimisation and tuning, and high-pressure mindset. Environment modification for performance resilience."
   - title: "Athlete Pathways"
-    desc: "Guiding club talent safely into regional and National Age Group (NAG) academy spaces."
+    desc: "Goal setting and planning. Working with the archer to define SMART goals and the routes to success. Balancing real-life and archery, maximising potential."
+    - title: "Performance Psychology"
+    desc: "Visualisation and emotional regulation integrated into the development journey."
 
 # Contact Section
+contact_email: "dave@yorkarchers.co.uk"  # ← Add this line with your actual email
 contact_img: "img-lilleshall.jpg"
 ---
