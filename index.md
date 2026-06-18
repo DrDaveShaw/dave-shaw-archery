@@ -4,7 +4,7 @@ title: Dave Shaw Archery
 
 # Hero Section
 hero_eyebrow: "Performance archery coaching - Yorkshire"
-hero_heading: "Developing the archer, not just the shot"
+hero_heading: "Developing intelligent, resilient archers"
 hero_sub: "High-performance archery coaching for athletes looking to progress to the next level — grounded in technical precision in an athlete-centred development."
 hero_img: "img-session-monitor.jpg"
 
@@ -20,7 +20,7 @@ showcase_images:
 
 # About Section
 about_heading: "Building intelligent archers since 2015"
-about_text_1: "I'm a performance archery coach based in Yorkshire, working with junior and senior recurve and compound archers competing at regional and national levels. My coaching is athlete-centred: I care as much about the person behind the bow as I do about the score on the target."
+about_text_1: "I'm a performance archery coach based in Yorkshire, working with junior and senior recurve and compound archers competing at regional and national levels. I focus on co-development with the athlete, providing structure and understanding as a framework for growth."
 about_text_2: "Alongside my coaching, I'm a senior research fellow, bringing intellectual rigour and evidence-based non-linear pedagogy methods to every session."
 
 # Credentials List
