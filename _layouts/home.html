@@ -6,67 +6,65 @@
   <title>{{ page.title }}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --slate-900: #0f172a;
-      --slate-800: #1e293b;
-      --slate-100: #f1f5f9;
-      --gold: #b8860b;
-      --gold-dim: rgba(184, 134, 11, 0.08);
-      --text-muted: #64748b;
+      --black: #000000;
+      --gray-900: #111111;
+      --gray-600: #555555;
+      --gray-100: #eeeeee;
       --white: #ffffff;
-      --font-display: 'Plus Jakarta Sans', sans-serif;
-      --font-serif: 'Playfair Display', Georgia, serif;
-      --radius: 16px;
-      --shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.06);
+      --radius: 12px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { font-family: var(--font-display); background: #f8fafc; color: var(--slate-900); line-height: 1.7; padding: 0 1.5rem; }
-    .wrapper { max-width: 1100px; margin: 0 auto; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--white); color: var(--gray-900); line-height: 1.65; padding: 0 2rem; -webkit-font-smoothing: antialiased; }
+    .wrapper { max-width: 1140px; margin: 0 auto; }
     
     /* Navigation */
-    nav { display: flex; justify-content: space-between; align-items: center; padding: 2.5rem 0; }
-    nav a.brand { text-decoration: none; color: var(--slate-900); font-weight: 700; font-size: 1.2rem; letter-spacing: -0.02em; }
-    nav .cta-btn { font-size: 0.85rem; font-weight: 600; color: var(--white); background: var(--slate-900); padding: 0.7rem 1.4rem; border-radius: 30px; text-decoration: none; transition: all 0.2s; }
-    nav .cta-btn:hover { background: var(--gold); transform: translateY(-1px); }
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 3rem 0; }
+    nav .brand { text-decoration: none; color: var(--black); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; text-transform: uppercase; }
+    nav .cta-link { font-size: 0.9rem; font-weight: 600; color: var(--gray-600); text-decoration: none; transition: color 0.2s; }
+    nav .cta-link:hover { color: var(--black); }
 
-    /* Layout Configurations */
-    section { padding: 5.5rem 0; }
-    .grid-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 4.5rem; align-items: center; }
+    /* Layout Sections */
+    section { padding: 6rem 0; border-top: 1px solid var(--gray-100); }
+    section:first-of-type { border-top: none; padding-top: 1rem; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4.5rem; align-items: start; }
     @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; gap: 3rem; } section { padding: 4rem 0; } }
 
-    /* Typography styling */
-    h1 { font-size: clamp(2.4rem, 4.5vw, 3.8rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; color: var(--slate-900); }
-    h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--gold); }
-    h2 { font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; }
-    h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 0.6rem; letter-spacing: -0.01em; }
+    /* Strict Modern Typography */
+    h1 { font-size: clamp(2.2rem, 4.5vw, 3.5rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; color: var(--black); }
+    h2 { font-size: clamp(1.8rem, 3.5vw, 2.4rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 1.5rem; color: var(--black); }
+    h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--black); letter-spacing: -0.01em; }
     
-    .eyebrow { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); background: var(--gold-dim); padding: 0.35rem 0.8rem; border-radius: 20px; display: inline-block; margin-bottom: 1.2rem; }
-    .text-block p { color: var(--text-muted); margin-bottom: 1.2rem; font-size: 1.02rem; }
+    .eyebrow { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray-600); display: block; margin-bottom: 1rem; }
+    p { color: var(--gray-600); font-size: 1.02rem; }
     
-    /* Modern Rounded Media Elements */
-    img.featured-img { width: 100%; height: 480px; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); }
+    /* Clean Images and Image Grid Layouts */
+    img.display-img { width: 100%; height: 500px; object-fit: cover; border-radius: var(--radius); }
+    .showcase-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 1rem; }
+    .showcase-grid img { width: 100%; height: 340px; object-fit: cover; border-radius: var(--radius); }
+    @media (max-width: 768px) { .showcase-grid { grid-template-columns: 1fr; } .showcase-grid img { height: 260px; } }
     
-    /* Document Lists */
-    .list-clean { list-style: none; margin-top: 1.5rem; display: grid; gap: 0.6rem; }
-    .list-clean li { font-size: 0.95rem; font-weight: 500; color: var(--slate-800); display: flex; align-items: center; gap: 0.6rem; }
-    .list-clean li::before { content: ""; display: inline-block; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+    /* Minimalist Technical Item Lists */
+    .list-minimal { list-style: none; margin-top: 1.5rem; }
+    .list-minimal li { font-size: 1rem; font-weight: 500; color: var(--gray-900); padding: 0.6rem 0; border-bottom: 1px solid var(--gray-100); }
 
-    /* Services Dynamic Card Component Layouts */
-    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.75rem; margin-top: 2.5rem; }
-    .service-card { background: var(--white); padding: 2.2rem; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid rgba(15, 23, 42, 0.02); transition: transform 0.2s, box-shadow 0.2s; }
-    .service-card:hover { transform: translateY(-3px); box-shadow: 0 15px 35px -10px rgba(15, 23, 42, 0.1); }
-    .service-card p { color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; }
+    /* Technical Card Grids */
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2.5rem; }
+    .service-block { padding-right: 1rem; }
+    .service-block p { font-size: 0.95rem; margin-top: 0.5rem; }
 
-    /* Block Contact Anchor Cards */
-    .email-container { background: var(--slate-900); color: var(--white); padding: 3rem; border-radius: var(--radius); display: flex; flex-direction: column; justify-content: center; box-shadow: var(--shadow); }
-    .email-link { font-size: clamp(1.3rem, 2.5vw, 1.9rem); font-weight: 700; color: var(--white); text-decoration: none; margin-top: 0.8rem; letter-spacing: -0.02em; display: inline-block; width: fit-content; border-bottom: 2px dashed var(--gold); padding-bottom: 2px; transition: color 0.2s; word-break: break-all; }
-    .email-link:hover { color: var(--gold); }
+    /* Tech Style Solid Contact Banner Box */
+    .action-banner { background: var(--black); color: var(--white); padding: 4.5rem; border-radius: var(--radius); text-align: center; }
+    .action-banner h2 { color: var(--white); }
+    .action-banner p { color: #888888; margin-bottom: 2rem; }
+    .direct-email { font-size: clamp(1.3rem, 3.5vw, 2.2rem); font-weight: 700; color: var(--white); text-decoration: none; letter-spacing: -0.02em; border-bottom: 2px solid var(--white); padding-bottom: 4px; word-break: break-all; transition: opacity 0.2s; }
+    .direct-email:hover { opacity: 0.8; }
 
-    footer { padding: 4rem 0 3rem; text-align: center; font-size: 0.88rem; color: var(--text-muted); border-top: 1px solid var(--slate-100); margin-top: 2rem; }
+    footer { padding: 4rem 0; text-align: left; font-size: 0.9rem; color: var(--gray-600); border-top: 1px solid var(--gray-100); }
   </style>
 </head>
 <body>
@@ -75,36 +73,45 @@
   <!-- NAVIGATION -->
   <nav>
     <a href="#" class="brand">{{ page.title }}</a>
-    <a href="#contact" class="cta-btn">Get in touch</a>
+    <a href="#contact" class="cta-link">Connect</a>
   </nav>
 
   <!-- HERO SECTION -->
   <section class="grid-2">
-    <div class="text-block">
+    <div style="padding-top: 1.5rem;">
       <span class="eyebrow">{{ page.hero_eyebrow }}</span>
-      <h1>{{ page.hero_heading | markdownify | remove: '<p>' | remove: '</p>' }}</h1>
-      <p style="margin-top: 1.8rem;">{{ page.hero_sub }}</p>
+      <h1>{{ page.hero_heading }}</h1>
+      <p style="margin-top: 2rem; max-width: 500px;">{{ page.hero_sub }}</p>
     </div>
     <div>
       {% if page.hero_img %}
-        <img src="{{ page.hero_img }}" class="featured-img" alt="Dave Shaw Modern Archery Video Capture Analysis" />
+        <img src="{{ page.hero_img }}" class="display-img" alt="Performance Archery Training Analysis Monitor" />
       {% endif %}
     </div>
   </section>
 
-  <!-- ABOUT COACH SECTION -->
-  <section class="grid-2" style="background: var(--white); margin: 0 -10vw; padding: 5.5rem 10vw; box-shadow: inset 0 1px 0 var(--slate-100), inset 0 -1px 0 var(--slate-100);">
-    <div>
-      {% if page.about_img %}
-        <img src="{{ page.about_img }}" class="featured-img" alt="Technical Outdoor Coaching Range" style="object-position: center top;" />
-      {% endif %}
+  <!-- MULTI-IMAGE ROW SHOWCASE GRID -->
+  {% if page.showcase_images %}
+  <section style="padding: 1rem 0 6rem;">
+    <div class="showcase-grid">
+      {% for img_path in page.showcase_images %}
+        <img src="{{ img_path }}" alt="Performance Training Facilities and Range Logs" />
+      {% endfor %}
     </div>
-    <div class="text-block">
-      <span class="eyebrow">The Coach</span>
+  </section>
+  {% endif %}
+
+  <!-- ABOUT COACH SECTION -->
+  <section class="grid-2">
+    <div>
+      <span class="eyebrow">Methodology</span>
       <h2>{{ page.about_heading }}</h2>
-      <p style="margin-top: 1.5rem;">{{ page.about_text_1 }}</p>
+      <p style="margin-bottom: 1.5rem;">{{ page.about_text_1 }}</p>
       <p>{{ page.about_text_2 }}</p>
-      <ul class="list-clean">
+    </div>
+    <div>
+      <span class="eyebrow">Credentials</span>
+      <ul class="list-minimal">
         {% for cred in page.credentials %}
           <li>{{ cred }}</li>
         {% endfor %}
@@ -112,15 +119,15 @@
     </div>
   </section>
 
-  <!-- COACHING SERVICES CONFIGURATION -->
+  <!-- CORE SPECIALISMS GRID -->
   <section>
-    <div style="text-align: center; max-width: 600px; margin: 0 auto 1rem;">
-      <span class="eyebrow">Specialisms</span>
-      <h2>Framework & Methodology</h2>
+    <div style="margin-bottom: 4rem;">
+      <span class="eyebrow">Structures</span>
+      <h2>Framework & Offerings</h2>
     </div>
     <div class="services-grid">
       {% for service in page.services %}
-        <div class="service-card">
+        <div class="service-block">
           <h3>{{ service.title }}</h3>
           <p>{{ service.desc }}</p>
         </div>
@@ -128,19 +135,13 @@
     </div>
   </section>
 
-  <!-- FOOTER CONNECT SECTION -->
-  <section class="grid-2" id="contact" style="border-top: 1px solid var(--slate-100); padding-top: 5.5rem;">
-    <div class="text-block">
-      <span class="eyebrow">Connect</span>
-      <h2>Ready to train?</h2>
-      <p style="margin-top: 1.2rem;">Coaching pathways across regional sites in Yorkshire. Perfect for individual target athletes looking for structured performance improvement or clubs setting up specialized workshops.</p>
-      {% if page.contact_img %}
-        <img src="{{ page.contact_img }}" alt="Dave Shaw Coaching Facility Environment" style="height: 220px; border-radius: var(--radius); object-fit: cover; width: 100%; box-shadow: var(--shadow);" />
-      {% endif %}
-    </div>
-    <div class="email-container">
-      <span style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 600;">Drop a direct line</span>
-      <a href="mailto:{{ page.contact_email }}" class="email-link">
+  <!-- SOLID MINIMAL CONTACT BOX BANNER -->
+  <section id="contact" style="border-bottom: none;">
+    <div class="action-banner">
+      <span class="eyebrow" style="color: #888888; margin-bottom: 0.5rem;">Inquiries</span>
+      <h2>Contact</h2>
+      <p style="max-width: 620px; margin: 0 auto 2.5rem;">Coaching based at York Archers Society or some local travel. Perfect for individual target athletes looking for structured performance improvement or clubs setting up specialised workshops.</p>
+      <a href="mailto:{{ page.contact_email }}" class="direct-email">
         {{ page.contact_email }}
       </a>
     </div>
@@ -148,7 +149,7 @@
 
   <!-- SITE FOOTER -->
   <footer>
-    <p>© {{ "now" | date: "%Y" }} Dave Shaw · AGB County Coach & Senior Research Fellow</p>
+    <p>© {{ "now" | date: "%Y" }} Dave Shaw — Performance Archery Coach</p>
   </footer>
 </div>
 
