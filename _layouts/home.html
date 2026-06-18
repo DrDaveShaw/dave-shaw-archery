@@ -58,11 +58,29 @@
     .grid-3 img { width: 100%; height: 320px; object-fit: cover; border-radius: var(--radius); }
     @media (max-width: 768px) { .grid-3 { grid-template-columns: 1fr; } .grid-3 img { height: 280px; } }
 
-    /* Dynamic Instagram Scraped Grid Layout */
-    .insta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-top: 2rem; }
-    .insta-item { block-size: 100%; aspect-ratio: 1 / 1; overflow: hidden; border-radius: var(--radius); position: relative; background: var(--gray-100); }
-    .insta-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
-    .insta-item:hover img { transform: scale(1.04); }
+    /* CSS Scroll Snap Sliding Reel Showcase */
+    .photo-reel { 
+      display: flex; 
+      gap: 1.5rem; 
+      overflow-x: auto; 
+      scroll-snap-type: x mandatory; 
+      padding-bottom: 1.5rem;
+      margin-top: 2rem;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+    .photo-reel-item { 
+      flex: 0 0 calc(25% - 1.15rem); /* Perfectly calculates 4 horizontal cards on full screens */
+      min-width: 260px;
+      aspect-ratio: 1 / 1; 
+      scroll-snap-align: start; 
+      overflow: hidden; 
+      border-radius: var(--radius); 
+      background: var(--gray-100);
+    }
+    .photo-reel-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    @media (max-width: 900px) { .photo-reel-item { flex: 0 0 calc(50% - 0.75rem); } }
+    @media (max-width: 600px) { .photo-reel-item { flex: 0 0 85%; } }
 
     /* Minimalist Item Lists */
     .list-minimal { list-style: none; margin-top: 1.5rem; }
@@ -86,13 +104,11 @@
 <body>
 
 <div class="wrapper">
-  <!-- NAVIGATION -->
   <nav>
     <a href="#" class="brand">{{ page.title }}</a>
     <a href="#contact" class="cta-link">Connect</a>
   </nav>
 
-  <!-- SPLIT HERO WITH 1:1 FRAMED IMAGE -->
   <section class="hero-section grid-2">
     <div class="hero-content-panel">
       <div>
@@ -108,7 +124,6 @@
     </div>
   </section>
 
-  <!-- EXPANDED PHOTO DISPLAY ROW -->
   {% if page.showcase_images %}
   <section style="padding: 2rem 0 6rem;">
     <span class="eyebrow">Range Context</span>
@@ -120,7 +135,6 @@
   </section>
   {% endif %}
 
-  <!-- ABOUT COACH SECTION -->
   <section class="grid-2">
     <div>
       <span class="eyebrow">Methodology</span>
@@ -138,7 +152,6 @@
     </div>
   </section>
 
-  <!-- CORE SPECIALISMS GRID -->
   <section>
     <div style="margin-bottom: 4rem;">
       <span class="eyebrow">Structures</span>
@@ -154,7 +167,6 @@
     </div>
   </section>
 
-  <!-- ARCHER BACKGROUND SECTION WITH 3 IMAGES -->
   {% if page.background_heading %}
   <section>
     <div style="max-width: 700px;">
@@ -172,7 +184,6 @@
   </section>
   {% endif %}
 
-  <!-- MINIMAL CONNECT BOX BANNER -->
   <section id="contact">
     <div class="action-banner">
       <span class="eyebrow" style="color: #888888; margin-bottom: 0.5rem;">Inquiries</span>
@@ -184,23 +195,32 @@
     </div>
   </section>
 
-  <!-- DYNAMIC INSTAGRAM COACHING FEED SECTION (Now shifted below Contact) -->
-  {% if site.data.instagram and site.data.instagram.size > 0 %}
   <section style="border-bottom: none; padding-bottom: 2rem;">
     <span class="eyebrow">Insights</span>
     <h2>On The Line</h2>
-    <p>Live technical breakdowns and updates tagged with #coaching from the field.</p>
-    <div class="insta-grid">
-      {% for post in site.data.instagram %}
-        <a href="{{ post.link }}" target="_blank" rel="noopener" class="insta-item" title="{{ post.caption | truncate: 100 }}">
-          <img src="{{ post.url }}" alt="Instagram coaching update illustration" />
-        </a>
+    <p>Visual logs and technical breakdowns straight from training sessions.</p>
+    
+    <div class="photo-reel">
+      {% assign files = site.static_files | sort: "path" %}
+      {% assign image_found = false %}
+      
+      {% for file in files %}
+        {% if file.path contains "/assets/photo-reel/" %}
+          {% assign image_found = true %}
+          <div class="photo-reel-item">
+            <img src="{{ file.path | relative_url }}" alt="Archery coaching session visual feedback update" />
+          </div>
+        {% endif %}
       {% endfor %}
+
+      {% if image_found == false %}
+        <div class="photo-reel-item" style="display: flex; align-items: center; justify-content: center; color: var(--gray-600); font-size: 0.85rem; border: 1px dashed var(--gray-100);">
+          [ Drop files into assets/photo-reel/ ]
+        </div>
+      {% endif %}
     </div>
   </section>
-  {% endif %}
 
-  <!-- SITE FOOTER -->
   <footer>
     <p>© {{ "now" | date: "%Y" }} Dave Shaw — Performance Archery Coach</p>
   </footer>
