@@ -22,33 +22,40 @@
     body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--white); color: var(--gray-900); line-height: 1.65; padding: 0 2rem; -webkit-font-smoothing: antialiased; }
     .wrapper { max-width: 1140px; margin: 0 auto; }
     
-    /* Navigation */
-    nav { display: flex; justify-content: space-between; align-items: center; padding: 3rem 0; }
-    nav .brand { text-decoration: none; color: var(--black); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; text-transform: uppercase; }
+    /* Navigation Link Only */
+    nav { display: flex; justify-content: flex-end; padding: 2rem 0; }
     nav .cta-link { font-size: 0.9rem; font-weight: 600; color: var(--gray-600); text-decoration: none; transition: color 0.2s; }
     nav .cta-link:hover { color: var(--black); }
 
-    /* Layout Sections */
+    /* Structural Layout Sections */
     section { padding: 6rem 0; border-top: 1px solid var(--gray-100); }
-    section:first-of-type { border-top: none; padding-top: 1rem; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4.5rem; align-items: start; }
-    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; gap: 3rem; } section { padding: 4rem 0; } }
+    section.hero-section { border-top: none; padding-top: 0; }
+    .grid-2 { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 4rem; align-items: stretch; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; gap: 2rem; } }
+
+    /* Logo Box and Integrated Content Panel */
+    .hero-content-panel { display: flex; flex-direction: column; justify-content: space-between; }
+    .logo-box { background: var(--black); color: var(--white); padding: 2rem; border-radius: var(--radius); margin-bottom: 2.5rem; display: inline-block; width: fit-content; }
+    .logo-box h4 { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
 
     /* Strict Modern Typography */
-    h1 { font-size: clamp(2.2rem, 4.5vw, 3.5rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; color: var(--black); }
+    h1 { font-size: clamp(2.2rem, 4.5vw, 3.4rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; color: var(--black); }
     h2 { font-size: clamp(1.8rem, 3.5vw, 2.4rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 1.5rem; color: var(--black); }
     h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--black); letter-spacing: -0.01em; }
     
     .eyebrow { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray-600); display: block; margin-bottom: 1rem; }
     p { color: var(--gray-600); font-size: 1.02rem; }
     
-    /* Clean Images and Image Grid Layouts */
-    img.display-img { width: 100%; height: 500px; object-fit: cover; border-radius: var(--radius); }
-    .showcase-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 1rem; }
-    .showcase-grid img { width: 100%; height: 340px; object-fit: cover; border-radius: var(--radius); }
-    @media (max-width: 768px) { .showcase-grid { grid-template-columns: 1fr; } .showcase-grid img { height: 260px; } }
+    /* Clean Crop-Framed Hero Image */
+    .hero-image-wrapper { width: 100%; position: relative; min-height: 550px; }
+    .hero-image-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius); object-position: center center; }
+    @media (max-width: 768px) { .hero-image-wrapper { min-height: 380px; } }
+
+    /* High Density Expanded Image Showcase Grid */
+    .showcase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+    .showcase-grid img { width: 100%; height: 380px; object-fit: cover; border-radius: var(--radius); }
     
-    /* Minimalist Technical Item Lists */
+    /* Minimalist Item Lists */
     .list-minimal { list-style: none; margin-top: 1.5rem; }
     .list-minimal li { font-size: 1rem; font-weight: 500; color: var(--gray-900); padding: 0.6rem 0; border-bottom: 1px solid var(--gray-100); }
 
@@ -57,7 +64,7 @@
     .service-block { padding-right: 1rem; }
     .service-block p { font-size: 0.95rem; margin-top: 0.5rem; }
 
-    /* Tech Style Solid Contact Banner Box */
+    /* Contact Banner Box */
     .action-banner { background: var(--black); color: var(--white); padding: 4.5rem; border-radius: var(--radius); text-align: center; }
     .action-banner h2 { color: var(--white); }
     .action-banner p { color: #888888; margin-bottom: 2rem; }
@@ -70,29 +77,34 @@
 <body>
 
 <div class="wrapper">
-  <!-- NAVIGATION -->
+  <!-- MINI UTILITY NAVIGATION -->
   <nav>
-    <a href="#" class="brand">{{ page.title }}</a>
     <a href="#contact" class="cta-link">Connect</a>
   </nav>
 
-  <!-- HERO SECTION -->
-  <section class="grid-2">
-    <div style="padding-top: 1.5rem;">
-      <span class="eyebrow">{{ page.hero_eyebrow }}</span>
-      <h1>{{ page.hero_heading }}</h1>
-      <p style="margin-top: 2rem; max-width: 500px;">{{ page.hero_sub }}</p>
+  <!-- SPLIT HERO WITH INTEGRATED LOGO BOX -->
+  <section class="hero-section grid-2">
+    <div class="hero-content-panel">
+      <div>
+        <div class="logo-box">
+          <h4>{{ page.title }}</h4>
+        </div>
+        <span class="eyebrow" style="margin-top: 1rem;">{{ page.hero_eyebrow }}</span>
+        <h1>{{ page.hero_heading }}</h1>
+      </div>
+      <p style="margin-top: 2.5rem; max-width: 520px;">{{ page.hero_sub }}</p>
     </div>
-    <div>
+    <div class="hero-image-wrapper">
       {% if page.hero_img %}
-        <img src="{{ page.hero_img }}" class="display-img" alt="Performance Archery Training Analysis Monitor" />
+        <img src="{{ page.hero_img }}" alt="Dave Shaw Coaching Capture Frame" />
       {% endif %}
     </div>
   </section>
 
-  <!-- MULTI-IMAGE ROW SHOWCASE GRID -->
+  <!-- EXPANDED PHOTO DISPLAY ROW -->
   {% if page.showcase_images %}
-  <section style="padding: 1rem 0 6rem;">
+  <section style="padding: 2rem 0 6rem;">
+    <span class="eyebrow">Range Context</span>
     <div class="showcase-grid">
       {% for img_path in page.showcase_images %}
         <img src="{{ img_path }}" alt="Performance Training Facilities and Range Logs" />
@@ -135,7 +147,7 @@
     </div>
   </section>
 
-  <!-- SOLID MINIMAL CONTACT BOX BANNER -->
+  <!-- MINIMAL CONNECT BOX BANNER -->
   <section id="contact" style="border-bottom: none;">
     <div class="action-banner">
       <span class="eyebrow" style="color: #888888; margin-bottom: 0.5rem;">Inquiries</span>

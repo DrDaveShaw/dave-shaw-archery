@@ -8,10 +8,15 @@ hero_heading: "Developing the archer, not just the shot"
 hero_sub: "High-performance archery coaching for athletes looking to progress to the next level — grounded in technical precision in an athlete-centred development."
 hero_img: "img-session-monitor.jpg"
 
-# Additional Image Grid Array
+# Add all your images here to populate the expanded grid below
 showcase_images:
   - "img-coaching-field.jpg"
   - "img-lilleshall.jpg"
+  - "img-archer-shooting.jpg"
+  - "img-archer-chat.jpg"
+  - "img-presenting.jpg"
+  - "img-quiver-badge.jpg"
+
 
 # About Section
 about_heading: "Building intelligent archers since 2015"
