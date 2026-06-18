@@ -4,7 +4,7 @@ title: Dave Shaw Archery
 
 # Hero Section
 hero_eyebrow: "Performance archery coaching - Yorkshire"
-hero_heading: "Developing the archer, not just the shot"
+hero_heading: "Developing the archer, _not just the shot_"
 hero_sub: "High-performance archery coaching for athletes looking to progress to the next level — grounded in technical precision in an athlete-centred development."
 hero_img: "img-session-monitor.jpg"
 
@@ -28,10 +28,10 @@ services:
     desc: "Structured sessions focusing on consistency, equipment optimisation and tuning, and high-pressure mindset. Environment modification for performance resilience."
   - title: "Athlete Pathways"
     desc: "Goal setting and planning. Working with the archer to define SMART goals and the routes to success. Balancing real-life and archery, maximising potential."
-    - title: "Performance Psychology"
+  - title: "Performance Psychology"
     desc: "Visualisation and emotional regulation integrated into the development journey."
 
 # Contact Section
-contact_email: "dave@yorkarchers.co.uk"  # ← Add this line with your actual email
+contact_email: "dave@yorkarchers.co.uk"
 contact_img: "img-lilleshall.jpg"
 ---
