@@ -40,6 +40,14 @@ services:
   - title: "Performance Psychology"
     desc: "Visualisation and emotional regulation integrated into the development journey."
 
+# Archery Background Text & 3-Image Showcase (Placed above Contact)
+background_heading: "Competitive Background & Philosophy"
+background_text: "Before transition to performance coaching, my journey started on the shooting line at University. My experience of successful national competition gives me firsthand understanding of the psychological and physical demands of high-pressure tournament environments. This competitive background directly shapes my evidence-based coaching methodology today."
+background_images:
+  - "img-roses.jpg"
+  - "img-koa.jpg"
+  - "img-dave-recurve.jpg"
+
 # Contact Section
 contact_email: "dave@yorkarchers.co.uk"
 ---
