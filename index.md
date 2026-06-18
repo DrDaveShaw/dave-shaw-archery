@@ -13,7 +13,7 @@ showcase_images:
   - "img-coaching-field.jpg"
   - "img-lilleshall.jpg"
   - "img-archer-shooting.jpg"
-  - "img-archer-chat.jpg"
+  - "img-archers-chat.jpg"
   - "img-presenting.jpg"
   - "img-quiver-badge.jpg"
 
