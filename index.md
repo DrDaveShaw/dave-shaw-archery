@@ -39,6 +39,8 @@ services:
     desc: "Goal setting and planning. Working with the archer to define SMART goals and the routes to success. Balancing real-life and archery, maximising potential."
   - title: "Performance Psychology"
     desc: "Visualisation and emotional regulation integrated into the development journey."
+  - title: "Workshops and talks"
+    desc: "Delivery of coach development workshops. Past topics have included Non-Linear Pedagogy in Archery, The Physics of Stabilisation and Grip Modification."
 
 # Archery Background Text & 3-Image Showcase (Placed above Contact)
 background_heading: "Competitive Background & Philosophy"
