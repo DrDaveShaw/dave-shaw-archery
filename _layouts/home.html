@@ -22,21 +22,20 @@
     body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--white); color: var(--gray-900); line-height: 1.65; padding: 0 2rem; -webkit-font-smoothing: antialiased; }
     .wrapper { max-width: 1140px; margin: 0 auto; }
     
-    /* Navigation Link Only */
-    nav { display: flex; justify-content: flex-end; padding: 2rem 0; }
+    /* Top Navigation Area */
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 3rem 0; }
+    nav .brand { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--black); text-decoration: none; }
     nav .cta-link { font-size: 0.9rem; font-weight: 600; color: var(--gray-600); text-decoration: none; transition: color 0.2s; }
     nav .cta-link:hover { color: var(--black); }
 
     /* Structural Layout Sections */
     section { padding: 6rem 0; border-top: 1px solid var(--gray-100); }
     section.hero-section { border-top: none; padding-top: 0; }
-    .grid-2 { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 4rem; align-items: stretch; }
+    .grid-2 { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 4rem; align-items: center; }
     @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; gap: 2rem; } }
 
-    /* Logo Box and Integrated Content Panel */
-    .hero-content-panel { display: flex; flex-direction: column; justify-content: space-between; }
-    .logo-box { background: var(--black); color: var(--white); padding: 2rem; border-radius: var(--radius); margin-bottom: 2.5rem; display: inline-block; width: fit-content; }
-    .logo-box h4 { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+    /* Integrated Content Panel */
+    .hero-content-panel { display: flex; flex-direction: column; justify-content: center; }
 
     /* Strict Modern Typography */
     h1 { font-size: clamp(2.2rem, 4.5vw, 3.4rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.15; color: var(--black); }
@@ -46,10 +45,9 @@
     .eyebrow { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray-600); display: block; margin-bottom: 1rem; }
     p { color: var(--gray-600); font-size: 1.02rem; }
     
-    /* Clean Crop-Framed Hero Image */
-    .hero-image-wrapper { width: 100%; position: relative; min-height: 550px; }
-    .hero-image-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius); object-position: center center; }
-    @media (max-width: 768px) { .hero-image-wrapper { min-height: 380px; } }
+    /* Clean Framed 1:1 Aspect Ratio Hero Image */
+    .hero-image-wrapper { width: 100%; aspect-ratio: 1 / 1; }
+    .hero-image-wrapper img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius); object-position: center center; }
 
     /* High Density Expanded Image Showcase Grid */
     .showcase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
@@ -77,22 +75,20 @@
 <body>
 
 <div class="wrapper">
-  <!-- MINI UTILITY NAVIGATION -->
+  <!-- NAVIGATION -->
   <nav>
+    <a href="#" class="brand">{{ page.title }}</a>
     <a href="#contact" class="cta-link">Connect</a>
   </nav>
 
-  <!-- SPLIT HERO WITH INTEGRATED LOGO BOX -->
+  <!-- SPLIT HERO WITH 1:1 FRAMED IMAGE -->
   <section class="hero-section grid-2">
     <div class="hero-content-panel">
       <div>
-        <div class="logo-box">
-          <h4>{{ page.title }}</h4>
-        </div>
-        <span class="eyebrow" style="margin-top: 1rem;">{{ page.hero_eyebrow }}</span>
+        <span class="eyebrow">{{ page.hero_eyebrow }}</span>
         <h1>{{ page.hero_heading }}</h1>
       </div>
-      <p style="margin-top: 2.5rem; max-width: 520px;">{{ page.hero_sub }}</p>
+      <p style="margin-top: 2rem; max-width: 520px;">{{ page.hero_sub }}</p>
     </div>
     <div class="hero-image-wrapper">
       {% if page.hero_img %}
