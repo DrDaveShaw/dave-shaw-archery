@@ -15,17 +15,19 @@ jobs:
         run: |
           USERNAME="drdaveshaw"
           
-          echo "Fetching public feed for $USERNAME..."
-          # Hits a clean JSON bridge to get your recent media data
-          curl -s "https://instagram.com/$USERNAME/?__a=1&__d=dis" > raw_insta.json
+echo "Fetching public feed for $USERNAME..."
+          # Fetch the feed, allowing failures without breaking the shell
+          curl -s "https://instagram.com/$USERNAME/?__a=1&__d=dis" > raw_insta.json || echo "Curl request failed"
           
-          # Creates a clean data directory if it doesn't exist
           mkdir -p _data
           
-          # Uses node to parse the feed, look for "#coaching", and output a neat file
+          # Run node script and catch parsing errors safely
           node -e '
+          const fs = require("fs");
           try {
-            const fs = require("fs");
+            if (!fs.existsSync("raw_insta.json") || fs.readFileSync("raw_insta.json", "utf8").trim() === "") {
+              throw new Error("Raw json file is empty or missing.");
+            }
             const data = JSON.parse(fs.readFileSync("raw_insta.json", "utf8"));
             const items = data.graphql?.user?.edge_owner_to_timeline_media?.edges || [];
             
@@ -36,14 +38,16 @@ jobs:
                 link: `https://instagram.com/p/${edge.node.shortcode}`
               }))
               .filter(post => post.caption.toLowerCase().includes("#coaching"))
-              .slice(0, 6); // Keep the top 6 most recent coaching items
+              .slice(0, 6);
             
             fs.writeFileSync("_data/instagram.json", JSON.stringify(filtered, null, 2));
-            console.log(`Successfully scraped ${filtered.length} coaching posts.`);
+            console.log(`Successfully updated feed data with ${filtered.length} items.`);
           } catch (e) {
-            console.error("Error parsing feed. Profile may be private or rate-limited:", e.message);
-            // Fallback to empty array so the site doesn't break
-            if (!fs.existsSync("_data/instagram.json")) fs.writeFileSync("_data/instagram.json", "[]");
+            console.log("Instagram blocked the scraper or returned a login page. Falling back safely.");
+            // Ensure data file exists even on failure so Jekyll doesn't crash
+            if (!fs.existsSync("_data/instagram.json")) {
+              fs.writeFileSync("_data/instagram.json", "[]");
+            }
           }
           '
 
@@ -52,4 +56,5 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
           git add _data/instagram.json
+          # Only commit if changes actually exist to avoid empty commit errors
           git diff --quiet && git diff --staged --quiet || (git commit -m "Update filtered Instagram coaching feed [skip ci]" && git push)
