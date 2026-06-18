@@ -1,5 +1,6 @@
 ---
 layout: home
+permalink: /replay/
 title: "Project: Archery Replay Kiosk"
 hero_eyebrow: "Custom Archery Feedback"
 hero_heading: "The Archery Replay System"

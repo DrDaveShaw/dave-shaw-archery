@@ -108,11 +108,12 @@
 </head>
 <body>
 
-<!-- NAVIGATION -->
+<div class="wrapper">
+  <!-- NAVIGATION -->
   <nav>
     <a href="{{ '/' | relative_url }}" class="brand">Dave Shaw — Performance Archery Coach</a>
     <div style="display: flex; gap: 2rem; align-items: center;">
-      <a href="{{ '/replay' | relative_url }}" class="cta-link">Replay Kiosk</a>
+      <a href="{{ '/replay/' | relative_url }}" class="cta-link">Replay Kiosk</a>
       <a href="{{ '/#contact' | relative_url }}" class="cta-link">Contact</a>
     </div>
   </nav>
@@ -128,7 +129,7 @@
     </div>
     <div class="hero-image-wrapper">
       {% if page.hero_img %}
-        <img src="{{ page.hero_img }}" alt="Dave Shaw Coaching Capture Frame" />
+        <img src="{{ page.hero_img | relative_url }}" alt="Dave Shaw Coaching Capture Frame" />
       {% endif %}
     </div>
   </section>
@@ -139,7 +140,7 @@
     <span class="eyebrow">Range Context</span>
     <div class="showcase-grid">
       {% for img_path in page.showcase_images %}
-        <img src="{{ img_path }}" alt="Performance Training Facilities and Range Logs" />
+        <img src="{{ img_path | relative_url }}" alt="Performance Training Facilities and Range Logs" />
       {% endfor %}
     </div>
   </section>
@@ -179,6 +180,9 @@
     </div>
   </section>
 
+  <!-- DYNAMIC MARKDOWN INJECTION -->
+  {{ content }}
+
   <!-- COMPETITIVE BACKGROUND -->
   {% if page.background_heading %}
   <section>
@@ -190,7 +194,7 @@
     {% if page.background_images %}
     <div class="grid-3">
       {% for img_path in page.background_images %}
-        <img src="{{ img_path }}" alt="Dave Shaw Athlete Background Gallery Image" />
+        <img src="{{ img_path | relative_url }}" alt="Dave Shaw Athlete Background Gallery Image" />
       {% endfor %}
     </div>
     {% endif %}
