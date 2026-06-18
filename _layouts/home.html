@@ -58,6 +58,12 @@
     .grid-3 img { width: 100%; height: 320px; object-fit: cover; border-radius: var(--radius); }
     @media (max-width: 768px) { .grid-3 { grid-template-columns: 1fr; } .grid-3 img { height: 280px; } }
 
+    /* Dynamic Instagram Scraped Grid Layout */
+    .insta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-top: 2rem; }
+    .insta-item { block-size: 100%; aspect-ratio: 1 / 1; overflow: hidden; border-radius: var(--radius); position: relative; background: var(--gray-100); }
+    .insta-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+    .insta-item:hover img { transform: scale(1.04); }
+
     /* Minimalist Item Lists */
     .list-minimal { list-style: none; margin-top: 1.5rem; }
     .list-minimal li { font-size: 1rem; font-weight: 500; color: var(--gray-900); padding: 0.6rem 0; border-bottom: 1px solid var(--gray-100); }
@@ -148,7 +154,7 @@
     </div>
   </section>
 
-  <!-- ARCHER BACKGROUND SECTION WITH 3 IMAGES (Now positioned right above Contact) -->
+  <!-- ARCHER BACKGROUND SECTION WITH 3 IMAGES -->
   {% if page.background_heading %}
   <section>
     <div style="max-width: 700px;">
@@ -167,7 +173,7 @@
   {% endif %}
 
   <!-- MINIMAL CONNECT BOX BANNER -->
-  <section id="contact" style="border-bottom: none;">
+  <section id="contact">
     <div class="action-banner">
       <span class="eyebrow" style="color: #888888; margin-bottom: 0.5rem;">Inquiries</span>
       <h2>Contact</h2>
@@ -177,6 +183,22 @@
       </a>
     </div>
   </section>
+
+  <!-- DYNAMIC INSTAGRAM COACHING FEED SECTION (Now shifted below Contact) -->
+  {% if site.data.instagram and site.data.instagram.size > 0 %}
+  <section style="border-bottom: none; padding-bottom: 2rem;">
+    <span class="eyebrow">Insights</span>
+    <h2>On The Line</h2>
+    <p>Live technical breakdowns and updates tagged with #coaching from the field.</p>
+    <div class="insta-grid">
+      {% for post in site.data.instagram %}
+        <a href="{{ post.link }}" target="_blank" rel="noopener" class="insta-item" title="{{ post.caption | truncate: 100 }}">
+          <img src="{{ post.url }}" alt="Instagram coaching update illustration" />
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
 
   <!-- SITE FOOTER -->
   <footer>
