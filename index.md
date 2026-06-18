@@ -3,22 +3,22 @@ layout: home
 title: Dave Shaw Archery
 
 # Hero Section
-hero_eyebrow: "Recurve & Compound Coaching · Yorkshire"
-hero_heading: "Coaching the archer, _not just the shot._"
-hero_sub: "High-performance archery coaching for juniors and seniors competing nationally — grounded in technical precision and athlete-centred development."
-hero_img: "img-archer-shooting.jpg"
+hero_eyebrow: "Performance archery coaching - Yorkshire"
+hero_heading: "Developing the archer, not just the shot"
+hero_sub: "High-performance archery coaching for athletes looking to progress to the next level — grounded in technical precision in an athlete-centred development."
+hero_img: "img-session-monitor.jpg"
 
 # About Section
-about_heading: "12 years building better archers"
+about_heading: "Building intelligent archers since 2015"
 about_text_1: "I'm a performance archery coach based in Yorkshire, working with junior and senior recurve and compound archers competing at regional and national levels. My coaching is athlete-centred: I care as much about the person behind the bow as I do about the score on the target."
-about_text_2: "Alongside coaching at York Archers and Valley Bowmen, I'm a senior research fellow, bringing intellectual rigour and evidence-based non-linear pedagogy methods to every session."
+about_text_2: "Alongside my coaching, I'm a senior research fellow, bringing intellectual rigour and evidence-based non-linear pedagogy methods to every session."
 about_img: "img-coaching-field.jpg"
 
 # Credentials List
 credentials:
-  - "AGB County Coach & Level 2 Coach"
-  - "NTDP Coach (Three Cohorts)"
-  - "UK Coaching Focus Coach"
+  - "AGB County Coach"
+  - "National Talent Development Coach 2023-2025"
+  - "UK Coaching Focus Coach 2023"
 
 # Core Offerings Grid
 services:
