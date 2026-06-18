@@ -98,17 +98,24 @@
     .direct-email { font-size: clamp(1.3rem, 3.5vw, 2.2rem); font-weight: 700; color: var(--white); text-decoration: none; letter-spacing: -0.02em; border-bottom: 2px solid var(--white); padding-bottom: 4px; word-break: break-all; transition: opacity 0.2s; }
     .direct-email:hover { opacity: 0.8; }
 
+    /* Testimonial Section Styles */
+    .testimonial-meta { display: flex; align-items: center; gap: 1rem; }
+    .testimonial-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: var(--gray-100); }
+    .testimonial-avatar-placeholder { width: 48px; height: 48px; border-radius: 50%; background: var(--gray-900); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+
     footer { padding: 4rem 0; text-align: left; font-size: 0.9rem; color: var(--gray-600); border-top: 1px solid var(--gray-100); }
   </style>
 </head>
 <body>
 
 <div class="wrapper">
+  <!-- NAVIGATION -->
   <nav>
     <a href="#" class="brand">{{ page.title }}</a>
     <a href="#contact" class="cta-link">Connect</a>
   </nav>
 
+  <!-- HERO SECTION -->
   <section class="hero-section grid-2">
     <div class="hero-content-panel">
       <div>
@@ -124,6 +131,7 @@
     </div>
   </section>
 
+  <!-- SHOWCASE GRID -->
   {% if page.showcase_images %}
   <section style="padding: 2rem 0 6rem;">
     <span class="eyebrow">Range Context</span>
@@ -135,6 +143,7 @@
   </section>
   {% endif %}
 
+  <!-- METHODOLOGY SECTION -->
   <section class="grid-2">
     <div>
       <span class="eyebrow">Methodology</span>
@@ -152,6 +161,7 @@
     </div>
   </section>
 
+  <!-- SERVICES GRID -->
   <section>
     <div style="margin-bottom: 4rem;">
       <span class="eyebrow">Structures</span>
@@ -167,6 +177,7 @@
     </div>
   </section>
 
+  <!-- COMPETITIVE BACKGROUND -->
   {% if page.background_heading %}
   <section>
     <div style="max-width: 700px;">
@@ -184,6 +195,7 @@
   </section>
   {% endif %}
 
+  <!-- CONTACT BANNER -->
   <section id="contact">
     <div class="action-banner">
       <span class="eyebrow" style="color: #888888; margin-bottom: 0.5rem;">Inquiries</span>
@@ -195,7 +207,8 @@
     </div>
   </section>
 
-  <section style="border-bottom: none; padding-bottom: 2rem;">
+  <!-- PHOTO REEL SHOWCASE -->
+  <section>
     <span class="eyebrow">Insights</span>
     <h2>Photo Reel</h2>
     
@@ -220,6 +233,39 @@
     </div>
   </section>
 
+  <!-- TESTIMONIALS SECTION -->
+  {% if page.testimonials and page.testimonials.size > 0 %}
+  <section style="border-bottom: none; padding-bottom: 2rem;">
+    <span class="eyebrow">Feedback</span>
+    <h2>Archer Testimonials</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; margin-top: 3rem;">
+      {% for item in page.testimonials %}
+        <div style="display: flex; flex-direction: column; justify-content: space-between;">
+          <blockquote style="font-size: 1.15rem; font-weight: 500; color: var(--gray-900); line-height: 1.6; letter-spacing: -0.01em; margin-bottom: 2rem; position: relative;">
+            “{{ item.quote }}”
+          </blockquote>
+          
+          <div class="testimonial-meta">
+            {% if item.image and item.image != "" %}
+              <img src="{{ item.image | relative_url }}" class="testimonial-avatar" alt="{{ item.author }}" />
+            {% else %}
+              <div class="testimonial-avatar-placeholder">
+                {{ item.initials | default: "??" }}
+              </div>
+            {% endif %}
+            <div>
+              <p style="font-weight: 700; color: var(--black); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.2;">{{ item.author }}</p>
+              <p style="font-size: 0.85rem; color: var(--gray-600); margin-top: 0.2rem; line-height: 1.2;">{{ item.role }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- SITE FOOTER -->
   <footer>
     <p>© {{ "now" | date: "%Y" }} Dave Shaw — Performance Archery Coach</p>
   </footer>

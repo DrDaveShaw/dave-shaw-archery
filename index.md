@@ -52,4 +52,14 @@ background_images:
 
 # Contact Section
 contact_email: "dave@yorkarchers.co.uk"
+
+testimonials:
+  - author: "A N Archer"
+    role: "Best Archer"
+    image: ""
+    quote: "Dave is Great"
+  - author: "A N Other"
+    role: "Parent"
+    image: ""
+    quote: "Really great"
 ---
