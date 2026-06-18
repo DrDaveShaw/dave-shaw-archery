@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ page.title }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1a1a; --paper: #f7f5f0; --gold: #b8860b; --muted: #6b6560; --rule: #dbd6ce; --white: #ffffff;
+      --display: 'Cormorant Garamond', Georgia, serif; --body: 'DM Sans', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--body); background: var(--paper); color: var(--ink); line-height: 1.65; padding: 0 1.5rem; }
+    .wrapper { max-width: 1050px; margin: 0 auto; }
+    
+    /* Navigation */
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 2rem 0; border-bottom: 1px solid var(--rule); }
+    nav a { text-decoration: none; color: var(--ink); font-family: var(--display); font-size: 1.25rem; font-weight: 600; }
+    nav .cta { font-family: var(--body); font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase; border-bottom: 1px solid var(--ink); padding-bottom: 2px; }
+
+    /* Sections Layout */
+    section { padding: 5rem 0; border-bottom: 1px solid var(--rule); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+    /* Typography & Elements */
+    h1, h2 { font-family: var(--display); font-weight: 600; line-height: 1.1; font-size: clamp(2.2rem, 4vw, 3.5rem); }
+    h1 em { font-style: italic; color: var(--gold); }
+    h3 { font-family: var(--display); font-size: 1.6rem; margin-bottom: 0.5rem; }
+    .eyebrow { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 1rem; }
+    .text-block p { color: var(--muted); margin-bottom: 1.2rem; font-size: 1rem; }
+    img { width: 100%; height: 450px; object-fit: cover; border-radius: 2px; }
+    
+    /* Bulleted lists and Grids */
+    .list-clean { list-style: none; margin-top: 1.5rem; }
+    .list-clean li { font-size: 0.9rem; color: var(--ink); margin-bottom: 0.5rem; display: flex; gap: 0.5rem; }
+    .list-clean li::before { content: "—"; color: var(--gold); }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem; }
+
+    /* Contact Form */
+    form { display: flex; flex-direction: column; gap: 1rem; }
+    input, textarea { width: 100%; padding: 0.8rem; font-family: var(--body); border: 1.5px solid var(--rule); background: var(--white); outline: none; }
+    input:focus, textarea:focus { border-color: var(--gold); }
+    button { background: var(--ink); color: var(--white); padding: 1rem 2rem; border: none; font-weight: 500; cursor: pointer; align-self: flex-start; }
+    button:hover { background: var(--gold); }
+    footer { padding: 3rem 0; text-align: center; font-size: 0.85rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <nav>
+    <a href="#">{{ page.title }}</a>
+    <a href="#contact" class="cta">Get in Touch</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="grid-2">
+    <div class="text-block">
+      <span class="eyebrow">{{ page.hero_eyebrow }}</span>
+      <h1>{{ page.hero_heading | markdownify | remove: '<p>' | remove: '</p>' }}</h1>
+      <p style="margin-top: 1.5rem;">{{ page.hero_sub }}</p>
+    </div>
+    {% if page.hero_img %}
+      <img src="{{ page.hero_img }}" alt="Dave Shaw Archery Performance Coaching" />
+    {% endif %}
+  </section>
+
+  <!-- ABOUT -->
+  <section class="grid-2">
+    {% if page.about_img %}
+      <img src="{{ page.about_img }}" alt="Archery Coaching Framework" style="object-position: center top;" />
+    {% endif %}
+    <div class="text-block">
+      <span class="eyebrow">The Coach</span>
+      <h2>{{ page.about_heading }}</h2>
+      <p>{{ page.about_text_1 }}</p>
+      <p>{{ page.about_text_2 }}</p>
+      <ul class="list-clean">
+        {% for cred in page.credentials %}
+          <li>{{ cred }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+
+  <!-- SERVICES / OFFERINGS -->
+  <section>
+    <span class="eyebrow" style="text-align: center; margin-bottom: 3rem;">Coaching Specialisms</span>
+    <div class="services-grid">
+      {% for service in page.services %}
+        <div class="service-card">
+          <h3>{{ service.title }}</h3>
+          <p style="color: var(--muted); font-size: 0.95rem;">{{ service.desc }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="grid-2" id="contact">
+    <div class="text-block">
+      <span class="eyebrow">Contact</span>
+      <h2>Ready to train?</h2>
+      <p style="margin-top: 1rem;">Based in Yorkshire. Offering tailored development structures for driven individual athletes and group club workshops.</p>
+      {% if page.contact_img %}
+        <img src="{{ page.contact_img }}" alt="Dave Shaw Coaching Location" style="height: 200px; margin-top: 1rem;" />
+      {% endif %}
+    </div>
+    <div>
+      <form action="#" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Your Email" required />
+        <textarea name="message" rows="5" placeholder="Tell me about your current archery journey..." required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <p>© {{ "now" | date: "%Y" }} Dave Shaw · AGB County Coach</p>
+  </footer>
+</div>
+
+</body>
+</html>
