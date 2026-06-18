@@ -20,7 +20,7 @@ credentials:
 services:
   - title: "01 / Hands-Free Time-Shift"
     desc: "The system continuously loops video on a configurable 10-second delay. The archer executes a shot, glances to the monitor, and the video of that shot plays back automatically."
-  - title: "02 / Multo-Angle Monitoring"
+  - title: "02 / Multi-Angle Monitoring"
     desc: "As many standard USB webcams can be connected as there are available ports. Each shown on the monitor, synced."
   - title: "03 / App Management"
     desc: "Android app connects to the wifi emitted by the kiosk, allowing for the last two minutes of video to be scrolled through on both phone and screen. Immediate frame by frame analysis. Never miss a shot."
