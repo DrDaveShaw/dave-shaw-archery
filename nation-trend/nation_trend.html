@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Nation &amp; Archer Trend Explorer</title>
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<style>
+  body { font-family: -apple-system, Helvetica, Arial, sans-serif; margin: 24px; color: #222; }
+  h1 { font-size: 20px; }
+  h2 { font-size: 16px; margin-top: 40px; }
+  .row { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 12px; }
+  .col { min-width: 240px; }
+  label { display: block; font-size: 13px; color: #555; margin-bottom: 4px; }
+  input[type=text] { width: 100%; padding: 4px; margin-bottom: 4px; box-sizing: border-box; }
+  select { width: 100%; padding: 4px; }
+  select[multiple] { height: 220px; }
+  .chart { width: 100%; height: 520px; }
+</style>
+</head>
+<body>
+
+<h1>Nation &amp; Archer Trend Explorer</h1>
+
+<h2>GB archers vs. nation top-10 trends, by year</h2>
+<div class="row">
+  <div class="col">
+    <label>Search &amp; select GB archers to compare</label>
+    <input type="text" id="archerFilter" placeholder="type a surname...">
+    <select id="archerSelect" multiple></select>
+  </div>
+  <div class="col">
+    <label>Search &amp; select nations to compare against</label>
+    <input type="text" id="natFilter" placeholder="type a nation...">
+    <select id="natSelect" multiple></select>
+  </div>
+</div>
+<div id="chart" class="chart"></div>
+
+<script>
+const DATA_URL = "nation_trend.data.json";
+let DATA = null;
+
+function populate(select, items) {
+  select.innerHTML = '';
+  items.forEach(name => {
+    const o = document.createElement('option');
+    o.value = name; o.textContent = name;
+    select.appendChild(o);
+  });
+}
+
+function filterList(input, select, items, preserveSelection) {
+  input.addEventListener('input', () => {
+    const q = input.value.toLowerCase();
+    const selected = preserveSelection
+      ? Array.from(select.selectedOptions).map(o => o.value) : [];
+    populate(select, items.filter(n => n.toLowerCase().includes(q)));
+    if (preserveSelection) {
+      Array.from(select.options).forEach(o => { if (selected.includes(o.value)) o.selected = true; });
+    }
+  });
+}
+
+function nationSeries(nation) {
+  const d = DATA.nation_top10[nation] || {};
+  return DATA.years.map(y => (y in d) ? d[y] : null);
+}
+
+function archerSeries(archer) {
+  const d = DATA.archer_year[archer] || {};
+  return DATA.years.map(y => (y in d) ? d[y] : null);
+}
+
+function drawChart() {
+  const archers = Array.from(document.getElementById('archerSelect').selectedOptions).map(o => o.value);
+  const nations = Array.from(document.getElementById('natSelect').selectedOptions).map(o => o.value);
+
+  const traces = nations.map(n => ({
+    x: DATA.years, y: nationSeries(n), name: n + ' (top 10)',
+    mode: 'lines+markers', line: { width: 2, dash: 'dash' }, connectgaps: true,
+  }));
+  const archerColors = ['#e34948', '#1baf7a', '#eda100', '#4a3aa7', '#e87ba4', '#008300'];
+  archers.forEach((archer, i) => {
+    traces.push({
+      x: DATA.years, y: archerSeries(archer), name: archer,
+      mode: 'lines+markers', line: { width: 4, color: archerColors[i % archerColors.length] },
+      marker: { size: 9 }, connectgaps: true,
+    });
+  });
+
+  Plotly.react('chart', traces, {
+    title: 'GB archers vs. nation top-10 trends',
+    xaxis: { title: 'Year', type: 'category' },
+    yaxis: { title: 'Average score' },
+    margin: { t: 40 },
+  }, { responsive: true });
+}
+
+function init() {
+  populate(document.getElementById('natSelect'), DATA.nations);
+  populate(document.getElementById('archerSelect'), DATA.gb_archers);
+
+  filterList(document.getElementById('natFilter'), document.getElementById('natSelect'), DATA.nations, true);
+  filterList(document.getElementById('archerFilter'), document.getElementById('archerSelect'), DATA.gb_archers, true);
+
+  document.getElementById('natSelect').addEventListener('change', drawChart);
+  document.getElementById('archerSelect').addEventListener('change', drawChart);
+
+  drawChart();
+}
+
+fetch(DATA_URL)
+  .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+  .then(json => { DATA = json; init(); })
+  .catch(err => {
+    document.body.innerHTML = `<p style="color:#c0392b">Failed to load ${DATA_URL}: ${err.message}.<br>
+    Make sure it sits next to this HTML file.</p>`;
+  });
+</script>
+</body>
+</html>
