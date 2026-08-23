@@ -8,7 +8,7 @@
 <style>
   body { font-family: -apple-system, Helvetica, Arial, sans-serif; margin: 24px; color: #222; }
   h1 { font-size: 20px; }
-  h2 { font-size: 16px; margin-top: 40px; }
+  h2 { font-size: 16px; margin-top: 48px; border-top: 1px solid #ddd; padding-top: 16px; }
   .row { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 12px; }
   .col { min-width: 240px; }
   label { display: block; font-size: 13px; color: #555; margin-bottom: 4px; }
@@ -16,29 +16,17 @@
   select { width: 100%; padding: 4px; }
   select[multiple] { height: 220px; }
   .chart { width: 100%; height: 520px; }
+  .empty-note { color: #888; font-size: 13px; }
 </style>
 </head>
 <body>
 
 <h1>Nation &amp; Archer Trend Explorer</h1>
-
-<h2>GB archers vs. nation top-10 trends, by year</h2>
-<div class="row">
-  <div class="col">
-    <label>Search &amp; select GB archers to compare</label>
-    <input type="text" id="archerFilter" placeholder="type a surname...">
-    <select id="archerSelect" multiple></select>
-  </div>
-  <div class="col">
-    <label>Search &amp; select nations to compare against</label>
-    <input type="text" id="natFilter" placeholder="type a nation...">
-    <select id="natSelect" multiple></select>
-  </div>
-</div>
-<div id="chart" class="chart"></div>
+<div id="panels"></div>
 
 <script>
 const DATA_URL = "index.data.json";
+const ROUND_LABELS = {"70m": "Senior recurve (70m)", "compound50": "Compound (50m)"};
 let DATA = null;
 
 function populate(select, items) {
@@ -62,52 +50,92 @@ function filterList(input, select, items, preserveSelection) {
   });
 }
 
-function nationSeries(nation) {
-  const d = DATA.nation_top10[nation] || {};
-  return DATA.years.map(y => (y in d) ? d[y] : null);
+function nationSeries(roundData, nation) {
+  const d = roundData.nation_top10[nation] || {};
+  return roundData.years.map(y => (y in d) ? d[y] : null);
 }
 
-function archerSeries(archer) {
-  const d = DATA.archer_year[archer] || {};
-  return DATA.years.map(y => (y in d) ? d[y] : null);
+function archerSeries(roundData, archer) {
+  const d = roundData.archer_year[archer] || {};
+  return roundData.years.map(y => (y in d) ? d[y] : null);
 }
 
-function drawChart() {
-  const archers = Array.from(document.getElementById('archerSelect').selectedOptions).map(o => o.value);
-  const nations = Array.from(document.getElementById('natSelect').selectedOptions).map(o => o.value);
+function buildPanel(roundKey, roundData, label) {
+  const panels = document.getElementById('panels');
+  const section = document.createElement('div');
 
-  const traces = nations.map(n => ({
-    x: DATA.years, y: nationSeries(n), name: n + ' (top 10)',
-    mode: 'lines+markers', line: { width: 2, dash: 'dash' }, connectgaps: true,
-  }));
-  const archerColors = ['#e34948', '#1baf7a', '#eda100', '#4a3aa7', '#e87ba4', '#008300'];
-  archers.forEach((archer, i) => {
-    traces.push({
-      x: DATA.years, y: archerSeries(archer), name: archer,
-      mode: 'lines+markers', line: { width: 4, color: archerColors[i % archerColors.length] },
-      marker: { size: 9 }, connectgaps: true,
+  if (!roundData.nations.length && !roundData.gb_archers.length) {
+    section.innerHTML = `<h2>${label}</h2><p class="empty-note">No data for this round type.</p>`;
+    panels.appendChild(section);
+    return;
+  }
+
+  const archerFilterId = `archerFilter_${roundKey}`;
+  const archerSelectId = `archerSelect_${roundKey}`;
+  const natFilterId = `natFilter_${roundKey}`;
+  const natSelectId = `natSelect_${roundKey}`;
+  const chartId = `chart_${roundKey}`;
+
+  section.innerHTML = `
+    <h2>${label}</h2>
+    <div class="row">
+      <div class="col">
+        <label>Search &amp; select GB archers to compare</label>
+        <input type="text" id="${archerFilterId}" placeholder="type a surname...">
+        <select id="${archerSelectId}" multiple></select>
+      </div>
+      <div class="col">
+        <label>Search &amp; select nations to compare against</label>
+        <input type="text" id="${natFilterId}" placeholder="type a nation...">
+        <select id="${natSelectId}" multiple></select>
+      </div>
+    </div>
+    <div id="${chartId}" class="chart"></div>
+  `;
+  panels.appendChild(section);
+
+  const archerSelect = document.getElementById(archerSelectId);
+  const natSelect = document.getElementById(natSelectId);
+
+  function draw() {
+    const archers = Array.from(archerSelect.selectedOptions).map(o => o.value);
+    const nations = Array.from(natSelect.selectedOptions).map(o => o.value);
+
+    const traces = nations.map(n => ({
+      x: roundData.years, y: nationSeries(roundData, n), name: n + ' (top 10)',
+      mode: 'lines+markers', line: { width: 2, dash: 'dash' }, connectgaps: true,
+    }));
+    const archerColors = ['#e34948', '#1baf7a', '#eda100', '#4a3aa7', '#e87ba4', '#008300'];
+    archers.forEach((archer, i) => {
+      traces.push({
+        x: roundData.years, y: archerSeries(roundData, archer), name: archer,
+        mode: 'lines+markers', line: { width: 4, color: archerColors[i % archerColors.length] },
+        marker: { size: 9 }, connectgaps: true,
+      });
     });
-  });
 
-  Plotly.react('chart', traces, {
-    title: 'GB archers vs. nation top-10 trends',
-    xaxis: { title: 'Year', type: 'category' },
-    yaxis: { title: 'Average score' },
-    margin: { t: 40 },
-  }, { responsive: true });
+    Plotly.react(chartId, traces, {
+      title: label,
+      xaxis: { title: 'Year', type: 'category' },
+      yaxis: { title: 'Average score' },
+      margin: { t: 40 },
+    }, { responsive: true });
+  }
+
+  populate(natSelect, roundData.nations);
+  populate(archerSelect, roundData.gb_archers);
+  filterList(document.getElementById(natFilterId), natSelect, roundData.nations, true);
+  filterList(document.getElementById(archerFilterId), archerSelect, roundData.gb_archers, true);
+  natSelect.addEventListener('change', draw);
+  archerSelect.addEventListener('change', draw);
+  draw();
 }
 
 function init() {
-  populate(document.getElementById('natSelect'), DATA.nations);
-  populate(document.getElementById('archerSelect'), DATA.gb_archers);
-
-  filterList(document.getElementById('natFilter'), document.getElementById('natSelect'), DATA.nations, true);
-  filterList(document.getElementById('archerFilter'), document.getElementById('archerSelect'), DATA.gb_archers, true);
-
-  document.getElementById('natSelect').addEventListener('change', drawChart);
-  document.getElementById('archerSelect').addEventListener('change', drawChart);
-
-  drawChart();
+  Object.keys(ROUND_LABELS).forEach(roundKey => {
+    const roundData = DATA.rounds[roundKey];
+    if (roundData) buildPanel(roundKey, roundData, ROUND_LABELS[roundKey]);
+  });
 }
 
 fetch(DATA_URL)
