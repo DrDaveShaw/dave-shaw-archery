@@ -29,6 +29,7 @@
 <script>
 const DATA_URL = "index.data.json";
 const ROUND_LABELS = {"70m": "Senior recurve (70m)", "compound50": "Compound (50m)"};
+const DEPTHS = [10, 20, 50, 100, 500];
 let DATA = null;
 
 function populate(select, items) {
@@ -52,30 +53,19 @@ function filterList(input, select, items, preserveSelection) {
   });
 }
 
-function nationSeries(roundData, nation) {
-  const d = roundData.nation_top10[nation] || {};
-  return roundData.years.map(y => (y in d) ? d[y] : null);
-}
-
-function archerSeries(roundData, archer) {
-  const d = roundData.archer_year[archer] || {};
-  return roundData.years.map(y => (y in d) ? d[y] : null);
-}
-
 function buildPanel(roundKey, roundData, label) {
   const panels = document.getElementById('panels');
   const section = document.createElement('div');
 
-  if (!roundData.nations.length && !roundData.gb_archers.length) {
+  if (!roundData.nations.length) {
     section.innerHTML = `<h2>${label}</h2><p class="empty-note">No data for this round type.</p>`;
     panels.appendChild(section);
     return;
   }
 
-  const archerFilterId = `archerFilter_${roundKey}`;
-  const archerSelectId = `archerSelect_${roundKey}`;
   const natFilterId = `natFilter_${roundKey}`;
   const natSelectId = `natSelect_${roundKey}`;
+  const depthSelectId = `depthSelect_${roundKey}`;
   const chartId = `chart_${roundKey}`;
 
   const boxNatFilterId = `boxNatFilter_${roundKey}`;
@@ -87,14 +77,15 @@ function buildPanel(roundKey, roundData, label) {
     <h2>${label}</h2>
     <div class="row">
       <div class="col">
-        <label>Search &amp; select GB archers to compare</label>
-        <input type="text" id="${archerFilterId}" placeholder="type a surname...">
-        <select id="${archerSelectId}" multiple></select>
-      </div>
-      <div class="col">
-        <label>Search &amp; select nations to compare against</label>
+        <label>Search &amp; select nations</label>
         <input type="text" id="${natFilterId}" placeholder="type a nation...">
         <select id="${natSelectId}" multiple></select>
+      </div>
+      <div class="col">
+        <label>Average of top N archers</label>
+        <select id="${depthSelectId}">
+          ${DEPTHS.map(n => `<option value="${n}"${n===10?' selected':''}>Top ${n}</option>`).join('')}
+        </select>
       </div>
     </div>
     <div id="${chartId}" class="chart"></div>
@@ -115,28 +106,23 @@ function buildPanel(roundKey, roundData, label) {
   `;
   panels.appendChild(section);
 
-  const archerSelect = document.getElementById(archerSelectId);
   const natSelect = document.getElementById(natSelectId);
+  const depthSelect = document.getElementById(depthSelectId);
 
   function draw() {
-    const archers = Array.from(archerSelect.selectedOptions).map(o => o.value);
     const nations = Array.from(natSelect.selectedOptions).map(o => o.value);
+    const depth = depthSelect.value;
 
-    const traces = nations.map(n => ({
-      x: roundData.years, y: nationSeries(roundData, n), name: n + ' (top 10)',
-      mode: 'lines+markers', line: { width: 2, dash: 'dash' }, connectgaps: true,
-    }));
-    const archerColors = ['#e34948', '#1baf7a', '#eda100', '#4a3aa7', '#e87ba4', '#008300'];
-    archers.forEach((archer, i) => {
-      traces.push({
-        x: roundData.years, y: archerSeries(roundData, archer), name: archer,
-        mode: 'lines+markers', line: { width: 4, color: archerColors[i % archerColors.length] },
-        marker: { size: 9 }, connectgaps: true,
-      });
+    const traces = nations.map(n => {
+      const d = roundData.nation_topN[depth][n] || {};
+      return {
+        x: roundData.years, y: roundData.years.map(y => (y in d) ? d[y] : null),
+        name: n, mode: 'lines+markers', line: { width: 2 }, connectgaps: true,
+      };
     });
 
     Plotly.react(chartId, traces, {
-      title: label,
+      title: `${label} -- average of each nation's top ${depth} archers`,
       xaxis: { title: 'Year', type: 'category' },
       yaxis: { title: 'Average score' },
       margin: { t: 40 },
@@ -144,11 +130,9 @@ function buildPanel(roundKey, roundData, label) {
   }
 
   populate(natSelect, roundData.nations);
-  populate(archerSelect, roundData.gb_archers);
   filterList(document.getElementById(natFilterId), natSelect, roundData.nations, true);
-  filterList(document.getElementById(archerFilterId), archerSelect, roundData.gb_archers, true);
   natSelect.addEventListener('change', draw);
-  archerSelect.addEventListener('change', draw);
+  depthSelect.addEventListener('change', draw);
   draw();
 
   // -- boxplot sub-panel --
