@@ -220,7 +220,7 @@ function buildCheckerPanel(tabKey, roundData, label) {
         <select id="${natSelectId}" multiple></select>
       </div>
     </div>
-    <div class="boxplot-scroll"><div id="${chartId}" class="chart"></div></div>
+    <div id="${chartId}" class="chart"></div>
     <div class="empty-note" id="${noteId}" style="margin-top:12px; font-size:14px;"></div>
   `;
   panels.appendChild(section);
@@ -228,45 +228,62 @@ function buildCheckerPanel(tabKey, roundData, label) {
   const scoreInput = document.getElementById(scoreInputId);
   const natSelect = document.getElementById(natSelectId);
   const note = document.getElementById(noteId);
-
-  function pooledDist(nation) {
-    const byYear = roundData.nation_year_dist[nation] || {};
-    return [].concat(...Object.values(byYear));
-  }
+  const yearColors = ['#2a78d6', '#e34948', '#1baf7a', '#eda100', '#4a3aa7', '#e87ba4'];
 
   function draw() {
     const nations = Array.from(natSelect.selectedOptions).map(o => o.value);
     const score = parseFloat(scoreInput.value);
     const hasScore = !isNaN(score);
 
-    const traces = nations.map(n => ({
-      type: 'box', name: n, y: pooledDist(n), boxpoints: false,
-    }));
-    const shapes = (hasScore && nations.length) ? [{
-      type: 'line', xref: 'paper', x0: 0, x1: 1, y0: score, y1: score,
+    const traces = [];
+    nations.forEach(nation => {
+      roundData.years.forEach((year, i) => {
+        const vals = (roundData.nation_year_dist[nation] || {})[year] || [];
+        if (!vals.length) return;
+        traces.push({
+          type: 'histogram', x: vals,
+          name: nations.length > 1 ? `${nation} ${year}` : year,
+          xbins: { start: 0, end: 740, size: 20 },
+          marker: { color: yearColors[i % yearColors.length] },
+          opacity: 0.55,
+        });
+      });
+    });
+
+    const shapes = (hasScore && traces.length) ? [{
+      type: 'line', yref: 'paper', y0: 0, y1: 1, x0: score, x1: score,
       line: { color: '#e34948', width: 2, dash: 'dash' },
     }] : [];
 
     Plotly.react(chartId, traces, {
-      title: `${label} -- score distribution, all years pooled`,
-      yaxis: { title: 'Average score' },
+      title: nations.length === 1
+        ? `${nations[0]} -- ${label} score distribution by year`
+        : `${label} -- score distribution by nation and year`,
+      xaxis: { title: 'Total score', range: [0, 720] },
+      yaxis: { title: 'Number of archers' },
+      barmode: 'overlay',
       shapes: shapes,
       margin: { t: 40 },
     }, { responsive: true });
 
     if (!hasScore) {
-      note.textContent = 'Enter your average score to see where you would rank.';
+      note.textContent = 'Enter your average score to see how it compares.';
     } else if (!nations.length) {
-      note.textContent = `Score entered: ${score}. Select one or more countries above to see your percentile.`;
+      note.textContent = `Score entered: ${score}. Select one or more countries above to see how you compare.`;
     } else {
-      const lines = nations.map(n => {
-        const vals = pooledDist(n);
-        if (!vals.length) return `${n}: no data`;
-        const below = vals.filter(v => v < score).length;
-        const pct = Math.round(100 * below / vals.length);
-        return `${n}: ${score} ranks at the ${pct}th percentile of ${vals.length} archer-seasons`;
+      const lines = [];
+      nations.forEach(n => {
+        roundData.years.forEach(year => {
+          const vals = (roundData.nation_year_dist[n] || {})[year] || [];
+          if (!vals.length) return;
+          const better = vals.filter(v => v > score).length;
+          const pctBetter = Math.round(100 * better / vals.length);
+          lines.push(`${n} ${year}: ${pctBetter}% of ${vals.length} archers scored better than you`);
+        });
       });
-      note.textContent = lines.join(' | ');
+      note.textContent = lines.length
+        ? `Score entered: ${score}. ` + lines.join(' | ')
+        : `Score entered: ${score}, but none of the selected nations have data.`;
     }
   }
 
