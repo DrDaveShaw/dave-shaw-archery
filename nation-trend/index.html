@@ -19,6 +19,9 @@
   select[multiple] { height: 220px; }
   .chart { width: 100%; height: 520px; }
   .empty-note { color: #888; font-size: 13px; }
+  .results-table { border-collapse: collapse; font-size: 13px; width: 100%; max-width: 520px; }
+  .results-table th, .results-table td { text-align: left; padding: 6px 12px; border-bottom: 1px solid #eee; }
+  .results-table th { color: #555; font-weight: 600; }
   #tabs { display: flex; gap: 4px; border-bottom: 2px solid #ddd; margin-bottom: 8px; }
   .tab-btn { background: none; border: none; padding: 10px 18px; font-size: 14px;
              cursor: pointer; color: #666; border-bottom: 2px solid transparent;
@@ -267,23 +270,34 @@ function buildCheckerPanel(tabKey, roundData, label) {
     }, { responsive: true });
 
     if (!hasScore) {
-      note.textContent = 'Enter your average score to see how it compares.';
+      note.innerHTML = '<p class="empty-note">Enter your average score to see how it compares.</p>';
     } else if (!nations.length) {
-      note.textContent = `Score entered: ${score}. Select one or more countries above to see how you compare.`;
+      note.innerHTML = `<p class="empty-note">Score entered: ${score}. Select one or more countries above to see how you compare.</p>`;
     } else {
-      const lines = [];
+      const rows = [];
       nations.forEach(n => {
         roundData.years.forEach(year => {
           const vals = (roundData.nation_year_dist[n] || {})[year] || [];
           if (!vals.length) return;
           const better = vals.filter(v => v > score).length;
           const pctBetter = Math.round(100 * better / vals.length);
-          lines.push(`${n} ${year}: ${pctBetter}% of ${vals.length} archers scored better than you`);
+          rows.push({ n, year, pctBetter, count: vals.length });
         });
       });
-      note.textContent = lines.length
-        ? `Score entered: ${score}. ` + lines.join(' | ')
-        : `Score entered: ${score}, but none of the selected nations have data.`;
+      if (!rows.length) {
+        note.innerHTML = `<p class="empty-note">Score entered: ${score}, but none of the selected nations have data.</p>`;
+      } else {
+        const body = rows.map(r => `
+          <tr><td>${r.n}</td><td>${r.year}</td><td>${r.pctBetter}%</td><td>${r.count}</td></tr>
+        `).join('');
+        note.innerHTML = `
+          <p style="margin-bottom:6px">Score entered: ${score}</p>
+          <table class="results-table">
+            <thead><tr><th>Nation</th><th>Year</th><th>% scored better than you</th><th>Archers</th></tr></thead>
+            <tbody>${body}</tbody>
+          </table>
+        `;
+      }
     }
   }
 
