@@ -19,16 +19,23 @@
   select[multiple] { height: 220px; }
   .chart { width: 100%; height: 520px; }
   .empty-note { color: #888; font-size: 13px; }
+  #tabs { display: flex; gap: 4px; border-bottom: 2px solid #ddd; margin-bottom: 8px; }
+  .tab-btn { background: none; border: none; padding: 10px 18px; font-size: 14px;
+             cursor: pointer; color: #666; border-bottom: 2px solid transparent;
+             margin-bottom: -2px; }
+  .tab-btn:hover { color: #222; }
+  .tab-btn.active { color: #185fa5; border-bottom-color: #185fa5; font-weight: 600; }
 </style>
 </head>
 <body>
 
 <h1>Nation &amp; Archer Trend Explorer</h1>
+<div id="tabs"></div>
 <div id="panels"></div>
 
 <script>
 const DATA_URL = "index.data.json";
-const ROUND_LABELS = {"70m": "Senior recurve (70m)", "compound50": "Compound (50m)"};
+const ROUND_LABELS = {"70m": "Senior recurve (70m)", "compound50": "Compound (50m)", "barebow50": "Barebow (50m)"};
 const DEPTHS = [10, 20, 50, 100, 500];
 let DATA = null;
 
@@ -56,6 +63,7 @@ function filterList(input, select, items, preserveSelection) {
 function buildPanel(roundKey, roundData, label) {
   const panels = document.getElementById('panels');
   const section = document.createElement('div');
+  section.id = `panel_${roundKey}`;
 
   if (!roundData.nations.length) {
     section.innerHTML = `<h2>${label}</h2><p class="empty-note">No data for this round type.</p>`;
@@ -182,10 +190,125 @@ function buildPanel(roundKey, roundData, label) {
   drawBox();
 }
 
+function buildCheckerPanel(tabKey, roundData, label) {
+  const panels = document.getElementById('panels');
+  const section = document.createElement('div');
+  section.id = `panel_${tabKey}`;
+
+  if (!roundData.nations.length) {
+    section.innerHTML = `<h2>${label}</h2><p class="empty-note">No data for this round type.</p>`;
+    panels.appendChild(section);
+    return;
+  }
+
+  const scoreInputId = `score_${tabKey}`;
+  const natFilterId = `checkNatFilter_${tabKey}`;
+  const natSelectId = `checkNatSelect_${tabKey}`;
+  const chartId = `checkChart_${tabKey}`;
+  const noteId = `checkNote_${tabKey}`;
+
+  section.innerHTML = `
+    <h2>${label} -- check your score</h2>
+    <div class="row">
+      <div class="col">
+        <label>Your average score</label>
+        <input type="text" id="${scoreInputId}" placeholder="e.g. 620">
+      </div>
+      <div class="col">
+        <label>Search &amp; select countries to compare against</label>
+        <input type="text" id="${natFilterId}" placeholder="type a nation...">
+        <select id="${natSelectId}" multiple></select>
+      </div>
+    </div>
+    <div class="boxplot-scroll"><div id="${chartId}" class="chart"></div></div>
+    <div class="empty-note" id="${noteId}" style="margin-top:12px; font-size:14px;"></div>
+  `;
+  panels.appendChild(section);
+
+  const scoreInput = document.getElementById(scoreInputId);
+  const natSelect = document.getElementById(natSelectId);
+  const note = document.getElementById(noteId);
+
+  function pooledDist(nation) {
+    const byYear = roundData.nation_year_dist[nation] || {};
+    return [].concat(...Object.values(byYear));
+  }
+
+  function draw() {
+    const nations = Array.from(natSelect.selectedOptions).map(o => o.value);
+    const score = parseFloat(scoreInput.value);
+    const hasScore = !isNaN(score);
+
+    const traces = nations.map(n => ({
+      type: 'box', name: n, y: pooledDist(n), boxpoints: false,
+    }));
+    const shapes = (hasScore && nations.length) ? [{
+      type: 'line', xref: 'paper', x0: 0, x1: 1, y0: score, y1: score,
+      line: { color: '#e34948', width: 2, dash: 'dash' },
+    }] : [];
+
+    Plotly.react(chartId, traces, {
+      title: `${label} -- score distribution, all years pooled`,
+      yaxis: { title: 'Average score' },
+      shapes: shapes,
+      margin: { t: 40 },
+    }, { responsive: true });
+
+    if (!hasScore) {
+      note.textContent = 'Enter your average score to see where you would rank.';
+    } else if (!nations.length) {
+      note.textContent = `Score entered: ${score}. Select one or more countries above to see your percentile.`;
+    } else {
+      const lines = nations.map(n => {
+        const vals = pooledDist(n);
+        if (!vals.length) return `${n}: no data`;
+        const below = vals.filter(v => v < score).length;
+        const pct = Math.round(100 * below / vals.length);
+        return `${n}: ${score} ranks at the ${pct}th percentile of ${vals.length} archer-seasons`;
+      });
+      note.textContent = lines.join(' | ');
+    }
+  }
+
+  populate(natSelect, roundData.nations);
+  filterList(document.getElementById(natFilterId), natSelect, roundData.nations, true);
+  natSelect.addEventListener('change', draw);
+  scoreInput.addEventListener('input', draw);
+  draw();
+}
+
 function init() {
-  Object.keys(ROUND_LABELS).forEach(roundKey => {
-    const roundData = DATA.rounds[roundKey];
-    if (roundData) buildPanel(roundKey, roundData, ROUND_LABELS[roundKey]);
+  const roundKeys = Object.keys(ROUND_LABELS).filter(k => DATA.rounds[k]);
+  const tabs = [];
+  roundKeys.forEach(roundKey => {
+    tabs.push({ id: roundKey, label: ROUND_LABELS[roundKey],
+                roundData: DATA.rounds[roundKey], build: buildPanel });
+  });
+  roundKeys.forEach(roundKey => {
+    tabs.push({ id: `check_${roundKey}`, label: ROUND_LABELS[roundKey] + ' checker',
+                roundData: DATA.rounds[roundKey], build: buildCheckerPanel });
+  });
+
+  tabs.forEach(t => t.build(t.id, t.roundData, t.label));
+
+  const tabBar = document.getElementById('tabs');
+  tabs.forEach((t, i) => {
+    const btn = document.createElement('button');
+    btn.textContent = t.label;
+    btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
+    btn.addEventListener('click', () => {
+      tabs.forEach(other => {
+        document.getElementById(`panel_${other.id}`).style.display = (other.id === t.id) ? '' : 'none';
+      });
+      Array.from(tabBar.children).forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      window.dispatchEvent(new Event('resize'));
+    });
+    tabBar.appendChild(btn);
+  });
+
+  tabs.forEach((t, i) => {
+    document.getElementById(`panel_${t.id}`).style.display = (i === 0) ? '' : 'none';
   });
 }
 
